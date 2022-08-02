@@ -5,10 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
+
+    private Animator animator;
+    bool isFacingRight;
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
+        isFacingRight = true;
     }
 
     // Update is called once per frame
@@ -20,11 +24,36 @@ public class PlayerController : MonoBehaviour
     {
         float movementX = Input.GetAxis("Horizontal");
 
+        if (movementX != 0)
+        {
+            animator.SetBool("Walking", true);
+            if (movementX > 0 && !isFacingRight) 
+            {
+                Flip();
+            }
+            if (movementX < 0 && isFacingRight) 
+            {
+                Flip();
+            }
+        }
+        else 
+        {
+            animator.SetBool("Walking", false);
+        }
+
         Vector3 movement = new Vector3(movementX, 0, 0);
 
         movement *= Time.deltaTime * speed;
 
         transform.Translate(movement);
 
+    }
+
+    private void Flip() 
+    {
+        Vector3 currentScale = gameObject.transform.localScale;
+        currentScale.x *= -1;
+        gameObject.transform.localScale = currentScale;
+        isFacingRight = !isFacingRight;
     }
 }
