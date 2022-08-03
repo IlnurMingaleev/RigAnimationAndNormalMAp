@@ -35,17 +35,18 @@ public class PlayerController : MonoBehaviour
             {
                 Flip();
             }
+            Vector3 movement = new Vector3(movementX, 0, 0);
+
+            movement *= Time.deltaTime * speed;
+
+            transform.Translate(movement);
         }
         else 
         {
             animator.SetBool("Walking", false);
         }
 
-        Vector3 movement = new Vector3(movementX, 0, 0);
-
-        movement *= Time.deltaTime * speed;
-
-        transform.Translate(movement);
+        
 
     }
 
