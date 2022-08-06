@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     {
         Move();
     }
+
+
     private void Move()
     {
         float movementX = Input.GetAxis("Horizontal");
@@ -27,11 +29,11 @@ public class PlayerController : MonoBehaviour
         if (movementX != 0)
         {
             animator.SetBool("Walking", true);
-            if (movementX > 0 && !isFacingRight) 
+            if (movementX > 0 && !isFacingRight)
             {
                 Flip();
             }
-            if (movementX < 0 && isFacingRight) 
+            if (movementX < 0 && isFacingRight)
             {
                 Flip();
             }
@@ -41,20 +43,19 @@ public class PlayerController : MonoBehaviour
 
             transform.Translate(movement);
         }
-        else 
+        else
         {
             animator.SetBool("Walking", false);
         }
-
-        
-
     }
 
-    private void Flip() 
+
+    private void Flip()
     {
         Vector3 currentScale = gameObject.transform.localScale;
         currentScale.x *= -1;
         gameObject.transform.localScale = currentScale;
         isFacingRight = !isFacingRight;
     }
+
 }
