@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dbfd3e59b201b34486b3f03a9736eb0, type: 3}
   m_Name: Light against Echo
   m_EditorClassIdentifier: 
-  abilityName: 
-  coolDownTime: 0
+  abilityName: Light against Echo
+  coolDownTime: 3
   damageType: 0
   segment:
-    minInclusive: 0
-    maxExclusive: 0
+    minInclusive: 10
+    maxExclusive: 20
+  lastTimeUsed: 0

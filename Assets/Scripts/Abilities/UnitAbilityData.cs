@@ -27,7 +27,7 @@ public enum DamageType
 [CreateAssetMenu(fileName = "UnitData_NAME_Ability_", menuName = "Dragon Crashers/Unit/Ability Data", order = 2)]
 public class UnitAbilityData : ScriptableObject
 {
-    
+
     [Header("Name of Ability")]
     public string abilityName;
 
@@ -40,8 +40,35 @@ public class UnitAbilityData : ScriptableObject
     [Header("DamageRange")]
     public Segment segment;
 
+    [Header("LastTime ability was used")]
+    public float lastTimeUsed;
+
     public int GetRandomDamageInRange() 
     {
         return Random.Range(segment.minInclusive, segment.maxExclusive);
     }
+
+    public void UseAbility(GameObject gObject) 
+    {
+        if (CanCast())
+        {
+            UnitHealthBehaviour unitHealthBehaviour = gObject.GetComponent<UnitHealthBehaviour>();
+            if (unitHealthBehaviour != null) 
+            {
+                unitHealthBehaviour.TakeDamage(GetRandomDamageInRange());
+                lastTimeUsed = Time.time;
+            }
+            
+        }
+        else 
+        {
+            return;
+        }
+    }
+
+    public bool CanCast() 
+    {
+        return Time.time >= lastTimeUsed + coolDownTime; 
+    }
+
 }
