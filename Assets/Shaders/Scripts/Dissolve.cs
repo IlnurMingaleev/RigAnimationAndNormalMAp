@@ -16,7 +16,7 @@ public class Dissolve : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        /*if (Input.GetKeyDown(KeyCode.W))
         {
 
             isDissolving = true;
@@ -30,7 +30,7 @@ public class Dissolve : MonoBehaviour
                 isDissolving = false;
             }
             material.SetFloat("_Fade", fade);
-        }
+        }*/
 
     }
 }
