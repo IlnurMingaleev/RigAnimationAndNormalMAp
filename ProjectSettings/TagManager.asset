@@ -53,6 +53,12 @@ TagManager:
   - name: Player
     uniqueID: 2658594691
     locked: 0
+  - name: UIBackground
+    uniqueID: 2872900055
+    locked: 0
+  - name: Line
+    uniqueID: 472242855
+    locked: 0
   - name: UI
     uniqueID: 528925369
     locked: 0

@@ -31,6 +31,14 @@ public class PlayerController : MonoBehaviour
     private bool isMoveInstant;
     public bool isOnGround;
     public float movementX;
+
+    public Vector2 Velocity 
+    {
+        get 
+        {
+            return velocity;    
+        }
+    }
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -56,16 +64,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Move();
-    }
 
-
-    private void Move()
-    {
-
-        movementX = playerControls.Land.Move.ReadValue<Vector2>().x;
-        //groundCheck.CheckIsOnGround();
-        
         if (movementX != 0)
         {
             isKeyPressed = true;
@@ -85,6 +84,14 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Walking", false);
         }
         targetVelocity = new Vector2(movementX, 0f) * maxSpeed;
+    }
+
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+
+        movementX = context.ReadValue<Vector2>().x;
+   
     }
 
     private void RunWithAcceleration() 
@@ -121,7 +128,7 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        groundCheck.CheckIsOnGround();
+        isOnGround = groundCheck.CheckIsOnGround();
 
         velocity = playerRigidbody.velocity;
 
