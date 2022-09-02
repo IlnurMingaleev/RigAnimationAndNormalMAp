@@ -19,6 +19,7 @@ public class OnHandleDrag : MonoBehaviour
     private PointerEventData clickData;
     public bool selected = false;
     public UnityEvent onDragEvent;
+    //[SerializeField] private ToolController toolController;
 
     private void Awake()
     {
@@ -38,6 +39,9 @@ public class OnHandleDrag : MonoBehaviour
         {
             currentHandlePosition = transform.position;
             lineRenderer.SetPosition(handles[gameObject.name], currentHandlePosition);
+            //Debug.Log(toolController.endDotOffset);
+           // Debug.Log(toolController.endDot.position);
+            //lineRenderer.SetPosition(4, toolController.endDot.position + toolController.endDotOffset);
         }
         if (Input.GetMouseButtonUp(0)) 
         {
