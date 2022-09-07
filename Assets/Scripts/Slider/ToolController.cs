@@ -14,6 +14,7 @@ public class ToolController : MonoBehaviour
     [SerializeField] private Transform speedHandle;
     [SerializeField] private Transform decelerationHandle;
     [SerializeField] private LineRenderer lineRenderer;
+    private Transform mainCam;
     public Vector3 endDotOffset;
 
     private void Awake()
@@ -22,21 +23,29 @@ public class ToolController : MonoBehaviour
     }
     private void Start()
     {
+        mainCam = Camera.main.transform;
         UpdateLineRendererPositions();
     }
 
-
+    private void Update()
+    {
+        UpdateLineRendererPositions();
+    }
 
     public void UpdateLineRendererPositions() 
     {
+
+        
         Vector3[] handlePositions = new Vector3[5] {
             beginDot.position,
             accelerationHandle.position,
             speedHandle.position,
             decelerationHandle.position,
-            endDot.position + endDotOffset
+            endDot.position
         };
+        //lineRenderer.gameObject.SetActive(false);
         lineRenderer.SetPositions(handlePositions);
+        //lineRenderer.gameObject.SetActive(false);
     }
 
     

@@ -33,10 +33,9 @@ public class PlayerController : MonoBehaviour
     public bool isOnGround;
     public float movementX;
 
-    [SerializeField] private Slider accelerationSlider;
-    [SerializeField] private Slider speedSlider;
-    [SerializeField] private Slider slowDownSlider;
-
+    //[SerializeField] private Slider accelerationSlider;
+    //[SerializeField] private Slider speedSlider;
+    //[SerializeField] private Slider slowDownSlider;
     public Vector2 Velocity 
     {
         get 
@@ -177,10 +176,35 @@ public class PlayerController : MonoBehaviour
             case "DeselerationSlider":
                 maxSlowDown = value;
                 break;
-
+            case "Turn Speed Slider":
+                maxTurnSpeed = value;
+                break;
+            case "AirAcceleration Slider":
+                maxAirAcceleration = value;
+                break;
+            case "Air Brake Slider":
+                maxAirSlowDown = value;
+                break;
+            case "Air Control Slider":
+                maxAirTurnSpeed = value;
+                break;
 
         }
     
+    }
+
+    public void OnBooleanValueChanged(GameObject toggleGameObject)
+    {
+        Toggle toggle = toggleGameObject.GetComponent<Toggle>();
+        bool isOn = toggle.isOn;
+        switch (toggleGameObject.name)
+        {
+            case "Instant Movement":
+                isMoveInstant = isOn;
+                break;
+
+        }
+
     }
 
 }

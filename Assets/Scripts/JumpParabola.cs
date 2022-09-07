@@ -52,21 +52,22 @@ public class JumpParabola : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) 
-        {
-            selected = true;
-        }
-        if (Input.GetMouseButtonUp(0)) 
-        { 
-            selected = false;
-        
-        }
-        if (selected) 
-        {
-            OnDurationValueChanged();
-            SetLineRendererPositions();
-            UpdateGravityLineRendererPositions();
-        }
+        /* if (Input.GetMouseButtonDown(0)) 
+         {
+             selected = true;
+         }
+         if (Input.GetMouseButtonUp(0)) 
+         { 
+             selected = false;
+
+         }
+         if (selected) 
+         {
+
+         }*/
+        OnDurationValueChanged();
+        SetLineRendererPositions();
+        UpdateGravityLineRendererPositions();
     }
 
     public void OnDurationValueChanged() 

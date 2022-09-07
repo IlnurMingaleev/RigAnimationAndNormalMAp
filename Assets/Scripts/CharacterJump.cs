@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CharacterJump : MonoBehaviour
 {
@@ -9,16 +10,16 @@ public class CharacterJump : MonoBehaviour
     private Rigidbody2D playerRigidbody;
     private Animator animator;
 
-    [SerializeField] private float timeToJumpApex;
-    [SerializeField] private float upwardMovementMultiplyer;
-    [SerializeField] private float downwardMovementMultiplyer;
-    [SerializeField] private int maxAirJumps;
+    [SerializeField, Range(0.2f, 1.25f)] private float timeToJumpApex;
+    [SerializeField, Range(0f, 5f)] private float upwardMovementMultiplyer;
+    [SerializeField, Range(1f, 10f)] private float downwardMovementMultiplyer;
+    [SerializeField, Range(0, 1)] private int maxAirJumps;
     [SerializeField] private bool variableJumpHeight;
-    [SerializeField] private float jumpCutoff;
+    [SerializeField, Range(1f, 10f)] private float jumpCutoff;
     [SerializeField] private float speedLimit;
-    [SerializeField] private float coyoteTime;
-    [SerializeField] private float jumpBuffer;
-    [SerializeField] private float jumpHeight;
+    [SerializeField, Range(0f, 0.3f)] private float coyoteTime;
+    [SerializeField, Range(0f, 0.3f)] private float jumpBuffer;
+    [SerializeField, Range(2f, 5.5f)] private float jumpHeight;
 
     private bool isJumpKeyPressed;
     private bool desiredJump;
@@ -188,6 +189,50 @@ public class CharacterJump : MonoBehaviour
             currentlyJumping = true;
 
         }
+    }
+    public void OnRadialSliderValueChanged(GameObject radialSliderGameObject) 
+    {
+        AnnularSlider radialSlider = radialSliderGameObject.GetComponent<AnnularSlider>();
+        jumpCutoff = radialSlider.Value;
+    
+    }
+    public void OnSliderValueChanged(GameObject sliderGameObject) 
+    {
+        Slider slider = sliderGameObject.GetComponent<Slider>();
+        float value = slider.value;
+        switch (sliderGameObject.name) 
+        {
+            case "Height Slider":
+                jumpHeight = value;
+                break;
+            case "Coyote Time Slider":
+                coyoteTime = value;
+                break;
+            case "JumpBuffer Slider":
+                jumpBuffer = value;
+                break;
+            case "Terminal Velocity Slider":
+                jumpHeight = value;
+                break;
+        }
+    
+    }
+
+    public void OnBooleanValueChanged(GameObject toggleGameObject) 
+    {
+        Toggle toggle = toggleGameObject.GetComponent<Toggle>();
+        bool isOn = toggle.isOn;
+        switch (toggleGameObject.name)
+        {
+            case "Double Jump":
+                maxAirJumps = isOn ? 1 : 0;
+                break;
+            case "Variable Height":
+                variableJumpHeight = isOn;
+                break;
+
+        }
+
     }
   
 }
