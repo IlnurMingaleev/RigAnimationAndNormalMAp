@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
 
         if (!isMoveInstant)
         {
-            RunWithoutAcceleration();
+            RunWithAcceleration();
         }
         else 
         {
@@ -173,7 +173,7 @@ public class PlayerController : MonoBehaviour
             case "SpeedSlider":
                 maxSpeed = value;
                 break;
-            case "DeselerationSlider":
+            case "DecelerationSlider":
                 maxSlowDown = value;
                 break;
             case "Turn Speed Slider":

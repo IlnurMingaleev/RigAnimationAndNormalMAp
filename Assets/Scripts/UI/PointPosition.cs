@@ -17,17 +17,19 @@ public class PointPosition : MonoBehaviour
     [SerializeField] private RectTransform endPoint;
 
     [SerializeField] private Canvas canvas;
+    private RectTransform canvasRect;
     // Start is called before the first frame update
     void Start()
     {
+        canvasRect = canvas.gameObject.GetComponent<RectTransform>();
         lineRenderer = GetComponent<UILineRenderer>();
         UpdateLineRendererPositions();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-       
+        UpdateLineRendererPositions();  
     }
     public void UpdateLineRendererPositions()
     {
@@ -43,6 +45,19 @@ public class PointPosition : MonoBehaviour
         //lineRenderer.gameObject.SetActive(false);
         lineRenderer.Points = handlePositions;
         //lineRenderer.gameObject.SetActive(false);
+    }
+
+    Vector2 WorldToCanvasPosition(Canvas canvas, RectTransform canvasRect, Camera camera, Vector3 position)
+    {
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(camera, position);
+        Vector2 result;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : camera, out result);
+        return canvas.transform.TransformPoint(result);
+    }
+    public void OnSliderValueChanged() 
+    {
+       // UpdateLineRendererPositions();
+    
     }
 
 }

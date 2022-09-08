@@ -131,12 +131,16 @@ public class CharacterJump : MonoBehaviour
                 {
                     if (isJumpKeyPressed && currentlyJumping)
                     {
-                        gravityMultiplier = downwardMovementMultiplyer;
+                        gravityMultiplier = upwardMovementMultiplyer;
                     }
                     else
                     {
-                        gravityMultiplier = upwardMovementMultiplyer;
+                        gravityMultiplier = jumpCutoff;
                     }
+                }
+                else 
+                {
+                    gravityMultiplier = upwardMovementMultiplyer;
                 }
             }
         }
@@ -153,18 +157,19 @@ public class CharacterJump : MonoBehaviour
         }
         else 
         {
-            if (isPlayerOnGround && velocity.y == 0) 
+            if (isPlayerOnGround) 
             {
                 currentlyJumping = false;
-                gravityMultiplier = defaultGravity;
+                
             }
+            gravityMultiplier = defaultGravity;
         }
         playerRigidbody.velocity = new Vector3(velocity.x, Mathf.Clamp(velocity.y, -speedLimit, 100));
     }
     private void DoAJump() 
     {
-        Debug.Log("Jump");
-        animator.SetTrigger("Jump");
+        //Debug.Log("Jump");
+        //animator.SetTrigger("Jump");
         
         if (isPlayerOnGround || (coyoteTimeCounter > 0.01f && coyoteTimeCounter < coyoteTime) || canJumpAgain) 
         {
@@ -173,9 +178,9 @@ public class CharacterJump : MonoBehaviour
             jumpBufferCounter = 0;
 
             canJumpAgain = (maxAirJumps == 1 && canJumpAgain == false);
-            Debug.Log(playerRigidbody.gravityScale);
+            //Debug.Log(playerRigidbody.gravityScale);
             jumpSpeed = Mathf.Sqrt(-2f * Physics2D.gravity.y * playerRigidbody.gravityScale * jumpHeight);
-            Debug.Log(jumpSpeed);
+            //Debug.Log(jumpSpeed);
 
             if (velocity.y > 0)
             {

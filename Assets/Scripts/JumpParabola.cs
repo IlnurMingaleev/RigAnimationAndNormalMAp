@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class JumpParabola : MonoBehaviour
 {
-    [SerializeField] private Transform point1;
-    [SerializeField] private Transform vertex;
-    [SerializeField] private Transform point2;
-    [SerializeField] private Transform heightSlider;
-    [SerializeField] private Transform gravityHandle;
-    [SerializeField] private Transform jumpHeightHandle;
+    [SerializeField] private RectTransform point1;
+    [SerializeField] private RectTransform jumpHeightHandle;
+    [SerializeField] private RectTransform jumpDurationHandle;
+    [SerializeField] private RectTransform heightSlider;
+    [SerializeField] private RectTransform gravityHandle;
     [SerializeField] private AnnularSlider annularSlider;
-    [SerializeField] private Transform dot;
+    [SerializeField] private RectTransform dot;
+    [SerializeField] private Camera cam;
     private float gravityValue;
-    private LineRenderer lineRenderer;
-    [SerializeField] private LineRenderer gravityLineRenderer;
+    private UILineRenderer jumpLineRenderer;
+   [SerializeField] private UILineRenderer gravityLineRenderer;
     private bool selected;
 
     private float A;
@@ -31,14 +32,17 @@ public class JumpParabola : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        lineRenderer = GetComponent<LineRenderer>();
+        
+        jumpLineRenderer = GetComponent<UILineRenderer>();
         SetLineRendererPositions();
         //lineRendererPositions = new List<Vector3>();
     }
 
     private void Start()
     {
-        
+        lineRendererPositions = new List<Vector3>();
+
+        lineRendererPositions.Add(Vector3.zero);
         OnDurationValueChanged();
         //FindXEnd();
         SetLineRendererPositions();
@@ -65,15 +69,13 @@ public class JumpParabola : MonoBehaviour
          {
 
          }*/
-        OnDurationValueChanged();
-        SetLineRendererPositions();
-        UpdateGravityLineRendererPositions();
+        /**/
     }
 
     public void OnDurationValueChanged() 
     {
         float x1 = point1.position.x;
-        float x2 = point2.position.x;
+        float x2 = jumpDurationHandle.position.x;
         float xValue = Mathf.Min(x1,x2) + Mathf.Abs(x2  - x1)/2.0f;
         heightSlider.position = new Vector2(xValue, heightSlider.position.y);
         //FindXEnd();
@@ -83,8 +85,8 @@ public class JumpParabola : MonoBehaviour
     public void CalculateA() 
     {
         Vector3 p1 = point1.position;
-        Vector3 p2 = vertex.position;
-        Vector3 p3 = point2.position;
+        Vector3 p2 = jumpHeightHandle.position;
+        Vector3 p3 = jumpDurationHandle.position;
 
         float x1 = p1.x;
         float y1 = p1.y;
@@ -99,7 +101,7 @@ public class JumpParabola : MonoBehaviour
     {
         if (A != 0) 
         {
-            B = (-2.0f) * A * vertex.position.x;
+            B = (-2.0f) * A * jumpHeightHandle.position.x;
         }
         
     }
@@ -107,7 +109,7 @@ public class JumpParabola : MonoBehaviour
     {
         if (A != 0)
         {
-            C = A * vertex.position.x * vertex.position.x + vertex.position.y;
+            C = A * jumpHeightHandle.position.x * jumpHeightHandle.position.x + jumpHeightHandle.position.y;
         }
 
     }
@@ -121,11 +123,12 @@ public class JumpParabola : MonoBehaviour
 
     public void CalculateLineRendererPositions() 
     {
+        //Debug.Log(lineRendererPositions);
         lineRendererPositions.Clear();
         //xEnd = Mathf.Lerp(1.0f, 10.0f, gravityValue);
         for (float t = 0; t <= 1; t += 0.05f) 
         {
-            float x = Mathf.Lerp(point1.position.x, vertex.position.x, t);
+            float x = Mathf.Lerp(point1.position.x, jumpHeightHandle.position.x, t);
             float y = A * x * x + B * x + C;
             //Debug.Log(lineRendererPositions);
             //Debug.Log(gameObject);
@@ -141,8 +144,8 @@ public class JumpParabola : MonoBehaviour
 
         for (float t = 0; t <= 1; t += 0.01f)
         {
-            float x = Mathf.Lerp(vertex.position.x, xEnd, t);
-            float y = A * (x - vertex.position.x) * (x - vertex.position.x) + vertex.position.y;
+            float x = Mathf.Lerp(jumpHeightHandle.position.x, xEnd, t);
+            float y = A * (x - jumpHeightHandle.position.x) * (x - jumpHeightHandle.position.x) + jumpHeightHandle.position.y;
             //Debug.Log(lineRendererPositions);
             //Debug.Log(gameObject);
             lineRendererPositions.Add(new Vector3(x, y, gameObject.transform.position.z));
@@ -152,26 +155,9 @@ public class JumpParabola : MonoBehaviour
 
     }
 
-    public void FindLineRendererPositions() 
-    {
-        
-        if (isGravityValueChanged)
-        {
-            A = A * gravityValue;
-            FindXEnd();
-        }
-       
-        
-
-    }
-  /*  public void MoveXEndPosition() 
-    {
-        float part = 
-        xEnd = Mathf.Lerp(point1.position.x, point2.position.x, part);
-    }*/
     public void FindXEnd() 
     {
-        xEnd = Mathf.Sqrt((point2.position.y  - vertex.position.y)/A) + vertex.position.x;
+        xEnd = Mathf.Sqrt((jumpDurationHandle.position.y  - jumpHeightHandle.position.y)/A) + jumpHeightHandle.position.x;
     }
 
     public void SetLineRendererPositions() 
@@ -180,26 +166,42 @@ public class JumpParabola : MonoBehaviour
         //xEnd = point2.position.x;
         CalculateLineRendererPositions();
         dot.position = lineRendererPositions[lineRendererPositions.Count - 1];
-        Vector3[] arrayOfPositions = lineRendererPositions.ToArray();
-        lineRenderer.positionCount = arrayOfPositions.Length;
-        lineRenderer.SetPositions(arrayOfPositions);
+        Vector2[] arrayOfPositions = GetLineRendererPositionsFromList();
+        jumpLineRenderer.Points = arrayOfPositions;
     
     }
     public void UpdateGravityLineRendererPositions() 
     {
-        Vector3 grevityHandlePos = gravityHandle.position;
-        Vector3 jumpHandlePos = jumpHeightHandle.position;
-        Vector3[] gravityLineRendererPositions = new Vector3[] { jumpHandlePos, grevityHandlePos };
-        gravityLineRenderer.positionCount = gravityLineRendererPositions.Length;
-        gravityLineRenderer.SetPositions(gravityLineRendererPositions);
+        Vector2 grevityHandlePos = gravityHandle.position;
+        Vector2 jumpHandlePos = jumpHeightHandle.position;
+        Vector2[] gravityLineRendererPositions = new Vector2[] { 
+            cam.WorldToScreenPoint(jumpHandlePos),
+            cam.WorldToScreenPoint(grevityHandlePos)
+        };
+        gravityLineRenderer.Points = gravityLineRendererPositions;
     }
 
     public void OnGravityValueChanged() 
     {
         gravityValue = annularSlider.Value;
-        
 
+        UpdateJumpLineRendererPositions();
         //positionScale = Mathf.Abs(xEnd - point1.position.x) / Mathf.Abs(point2.position.x - point1.position.x);
 
+    }
+    public Vector2[] GetLineRendererPositionsFromList() 
+    {
+        Vector2[] arrayLineRendererPositions = new Vector2[lineRendererPositions.Count];
+        for (int i = 0; i < arrayLineRendererPositions.Length; i++) 
+        {
+            arrayLineRendererPositions[i] = cam.WorldToScreenPoint(lineRendererPositions[i]);
+        }  
+        return arrayLineRendererPositions;
+    }
+    public void UpdateJumpLineRendererPositions() 
+    {
+        OnDurationValueChanged();
+        SetLineRendererPositions();
+        UpdateGravityLineRendererPositions();
     }
 }
