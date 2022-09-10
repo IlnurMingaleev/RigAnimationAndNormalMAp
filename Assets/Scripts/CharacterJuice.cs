@@ -1,12 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class CharacterJuice : MonoBehaviour
 {
     private PlayerController playerController;
     private CharacterJump characterJump;
     private Animator animator;
+    private Rigidbody2D rigidbody;
+    
+    [Header("Components - Particles")]
+    [SerializeField] private ParticleSystem moveParticles;
+    [SerializeField] private ParticleSystem jumpParticles;
+    [SerializeField] private ParticleSystem landParticles;
+
+
 
     [Header("Settings - Squash and Stretch")]
     [SerializeField] private Vector3 jumpPressSettings;
@@ -20,7 +28,7 @@ public class CharacterJuice : MonoBehaviour
     [SerializeField] private float maxTilt;
     [SerializeField] private float tiltSpeed;
 
-    [Header("Calcultions")]
+    [Header("Calculations")]
     private float runningSpeed;
     private float maxSpeed;
 
@@ -37,6 +45,7 @@ public class CharacterJuice : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         characterJump = GetComponent<CharacterJump>();
         animator = GetComponent<Animator>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -58,9 +67,10 @@ public class CharacterJuice : MonoBehaviour
         if (playerController.Velocity.x != 0) 
         {
             tiltDirection = Mathf.Sign(playerController.Velocity.x);
+            
         }
         Vector3 tiltVector = new Vector3(0, 0, Mathf.Lerp(-maxTilt, maxTilt, Mathf.InverseLerp(-1, 1, tiltDirection)));
-        animator.transform.rotation = Quaternion.RotateTowards(animator.transform.rotation, Quaternion.Euler(tiltVector), tiltSpeed * Time.deltaTime);
+        animator.transform.rotation = Quaternion.RotateTowards(animator.transform.rotation, Quaternion.Euler(-tiltVector), tiltSpeed * Time.deltaTime);
             
     }
     private void CheckForLanding() 
@@ -68,24 +78,35 @@ public class CharacterJuice : MonoBehaviour
         if (!playerGrounded && characterJump.IsPlayerOnGround)
         {
             playerGrounded = true;
+            animator.SetTrigger("Land");
+            landParticles.Play();
 
-            if(landPressing && landPressMultiplyer  > 1) 
+            //Debug.Log("Before Couroutine");
+            moveParticles.Play();
+            
+            if(!landPressing && landPressMultiplyer  > 1) 
             {
+                //Debug.Log("We start couroutine");
                 StartCoroutine(JumpPress(landPressSettings.x / landPressMultiplyer, landPressSettings.y * landPressMultiplyer, landPressSettings.z, landDrop, false));
             }
         }
         else if (playerGrounded && !characterJump.IsPlayerOnGround) 
         {
             playerGrounded = false;
+            moveParticles.Stop();
         }
     }
 
-    private void JumpEffects() 
+    public void JumpEffects() 
     {
+        animator.ResetTrigger("Land");
+        animator.SetTrigger("Jump");
         if (!jumpPressing && jumpPressMultiplyer > 1) 
         {
+            //Debug.Log("Starting couroutine in jump effects");
             StartCoroutine(JumpPress(jumpPressSettings.x / jumpPressMultiplyer, jumpPressSettings.y * jumpPressMultiplyer, jumpPressSettings.z, 0, true));
         }
+        jumpParticles.Play();
     }
 
     IEnumerator JumpPress(float xPress, float yPress, float seconds, float dropAmount, bool jumpPress) 
@@ -94,11 +115,11 @@ public class CharacterJuice : MonoBehaviour
         else { landPressing = true; }
         pressing = true;
 
-        Vector3 originalSize = Vector3.one;
+        Vector3 originalSize = Vector3.one * 0.1f;
         Vector3 targetSize = new Vector3(xPress, yPress, originalSize.z);
 
-        Vector3 originalPosition = Vector3.zero;
-        Vector3 targetPosition = new Vector3(0, -dropAmount, 0);
+        Vector3 originalPosition = gameObject.transform.position;
+        Vector3 targetPosition = new Vector3(originalPosition.x,originalPosition.y - dropAmount, originalPosition.z);
         float t = 0f;
         while (t <= 1.0) 
         {
@@ -122,6 +143,28 @@ public class CharacterJuice : MonoBehaviour
         else { landPressing = false; }
 
 
+
+    }
+    public void OnSliderValueChanged(GameObject sliderGameObject)
+    {
+        Slider tempSlider = sliderGameObject.GetComponent<Slider>();
+        float value = tempSlider.value;
+        switch (sliderGameObject.name)
+        {
+            case "Jump Slider":
+                jumpPressMultiplyer = value;
+                break;
+            case "Land Slider":
+                landPressMultiplyer = value;
+                break;
+            case "Angle Slider":
+                maxTilt = value;
+                break;
+            case "Tilt Speed Slider":
+                tiltSpeed = value;
+                break;
+
+        }
 
     }
 }

@@ -35,7 +35,7 @@ public class JumpParabola : MonoBehaviour
         
         jumpLineRenderer = GetComponent<UILineRenderer>();
         SetLineRendererPositions();
-        //lineRendererPositions = new List<Vector3>();
+        lineRendererPositions = new List<Vector3>();
     }
 
     private void Start()
@@ -167,7 +167,11 @@ public class JumpParabola : MonoBehaviour
         CalculateLineRendererPositions();
         dot.position = lineRendererPositions[lineRendererPositions.Count - 1];
         Vector2[] arrayOfPositions = GetLineRendererPositionsFromList();
-        jumpLineRenderer.Points = arrayOfPositions;
+        //Debug.Log(arrayOfPositions.Length);
+        if (jumpLineRenderer != null)
+        {
+            jumpLineRenderer.Points = arrayOfPositions;
+        }
     
     }
     public void UpdateGravityLineRendererPositions() 

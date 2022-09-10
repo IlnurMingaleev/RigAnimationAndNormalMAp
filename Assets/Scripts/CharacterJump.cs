@@ -9,6 +9,7 @@ public class CharacterJump : MonoBehaviour
     private GroundCheck groundCheck;
     private Rigidbody2D playerRigidbody;
     private Animator animator;
+    private CharacterJuice characterJuice;
 
     [SerializeField, Range(0.2f, 1.25f)] private float timeToJumpApex;
     [SerializeField, Range(0f, 5f)] private float upwardMovementMultiplyer;
@@ -20,6 +21,7 @@ public class CharacterJump : MonoBehaviour
     [SerializeField, Range(0f, 0.3f)] private float coyoteTime;
     [SerializeField, Range(0f, 0.3f)] private float jumpBuffer;
     [SerializeField, Range(2f, 5.5f)] private float jumpHeight;
+    [SerializeField] private float jumpHeightMultiplyer;
 
     private bool isJumpKeyPressed;
     private bool desiredJump;
@@ -29,7 +31,7 @@ public class CharacterJump : MonoBehaviour
     private float coyoteTimeCounter = 0;
     private bool currentlyJumping;
     private Vector2 velocity;
-    private float defaultGravity;
+    private float defaultGravityScale;
     private float gravityMultiplier;
     private float jumpSpeed;
 
@@ -44,11 +46,13 @@ public class CharacterJump : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        characterJuice = GetComponent<CharacterJuice>();
         groundCheck = GetComponent<GroundCheck>();
         playerRigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        defaultGravity = 1f;
-        gravityMultiplier = 1f; 
+        defaultGravityScale = 1f;
+        gravityMultiplier = 1f;
+        
     }
 
     // Update is called once per frame
@@ -72,7 +76,7 @@ public class CharacterJump : MonoBehaviour
 
             
         }
-        if (!isPlayerOnGround && !currentlyJumping)
+        if (!currentlyJumping && !isPlayerOnGround)
         {
             coyoteTimeCounter += Time.deltaTime;
         }
@@ -111,9 +115,9 @@ public class CharacterJump : MonoBehaviour
     private void SetPhysics() 
     {
         Vector2 newGravity = new Vector2(0, (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex));
-        //Debug.Log(newGravity);
-        //Debug.Log(Physics2D.gravity.y);
-        //Debug.Log(gravityMultiplier);
+        //Debug.Log("newGravity:" + newGravity);
+        //Debug.Log("Physics gravity" + Physics2D.gravity.y);
+        //Debug.Log("gravity multiplier" + gravityMultiplier);
         playerRigidbody.gravityScale = (newGravity.y / Physics2D.gravity.y) * gravityMultiplier;
     }
 
@@ -123,7 +127,7 @@ public class CharacterJump : MonoBehaviour
         {
             if (isPlayerOnGround)
             {
-                gravityMultiplier = defaultGravity;
+                gravityMultiplier = defaultGravityScale;
             }
             else
             {
@@ -148,7 +152,7 @@ public class CharacterJump : MonoBehaviour
         {
             if (isPlayerOnGround)
             {
-                gravityMultiplier = defaultGravity;
+                gravityMultiplier = defaultGravityScale;
             }
             else
             {
@@ -162,7 +166,7 @@ public class CharacterJump : MonoBehaviour
                 currentlyJumping = false;
                 
             }
-            gravityMultiplier = defaultGravity;
+            gravityMultiplier = defaultGravityScale;
         }
         playerRigidbody.velocity = new Vector3(velocity.x, Mathf.Clamp(velocity.y, -speedLimit, 100));
     }
@@ -193,6 +197,10 @@ public class CharacterJump : MonoBehaviour
             velocity.y += jumpSpeed;
             currentlyJumping = true;
 
+            if (characterJuice != null) 
+            {
+                characterJuice.JumpEffects();
+            }
         }
     }
     public void OnRadialSliderValueChanged(GameObject radialSliderGameObject) 
@@ -208,7 +216,7 @@ public class CharacterJump : MonoBehaviour
         switch (sliderGameObject.name) 
         {
             case "Height Slider":
-                jumpHeight = value;
+                jumpHeight = value * jumpHeightMultiplyer;
                 break;
             case "Coyote Time Slider":
                 coyoteTime = value;
@@ -216,9 +224,9 @@ public class CharacterJump : MonoBehaviour
             case "JumpBuffer Slider":
                 jumpBuffer = value;
                 break;
-            case "Terminal Velocity Slider":
-                jumpHeight = value;
-                break;
+            //case "Terminal Velocity Slider":
+                //jumpHeight = value * jumpHeightMultiplyer;
+               // break;
         }
     
     }

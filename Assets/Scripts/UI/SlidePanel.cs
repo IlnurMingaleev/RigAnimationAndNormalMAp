@@ -34,10 +34,12 @@ public class SlidePanel : MonoBehaviour
     {
         panel.anchoredPosition = new Vector2(0, -(panelHeight + buttonTabHeight));
         UpdateLineRendererPositions();
+        //gameObject.SetActive(true);
     }
     public void ClosePanel()
     {
         panel.anchoredPosition = new Vector2(0, 0);
         UpdateLineRendererPositions();
+        //gameObject.SetActive(false);
     }
 }

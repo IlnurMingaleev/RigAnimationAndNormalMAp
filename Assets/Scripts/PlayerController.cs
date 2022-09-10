@@ -9,11 +9,12 @@ public class PlayerController : MonoBehaviour
 {
 
     private PlayerControls playerControls;
-    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    public Animator animator;
     private GroundCheck groundCheck;
-    private bool isKeyPressed;
+    public bool isKeyPressed;
     private Rigidbody2D playerRigidbody;
-    bool isFacingRight;
+    public bool isFacingRight;
     private Vector2 velocity;
     private Vector2 targetVelocity;
     private float maxSpeedChange;
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
         isFacingRight = true;
         groundCheck = GetComponent<GroundCheck>();
         playerRigidbody = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void OnEnable()
@@ -68,7 +70,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (movementX != 0)
         {
             isKeyPressed = true;
@@ -87,6 +88,8 @@ public class PlayerController : MonoBehaviour
             isKeyPressed = false;
             animator.SetBool("Walking", false);
         }
+
+
         targetVelocity = new Vector2(movementX, 0f) * maxSpeed;
     }
 
@@ -95,6 +98,7 @@ public class PlayerController : MonoBehaviour
     {
 
         movementX = context.ReadValue<Vector2>().x;
+        //Debug.Log("MovementX:" + movementX);
    
     }
 
@@ -122,11 +126,14 @@ public class PlayerController : MonoBehaviour
 
         velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, maxSpeedChange);
 
+        animator.SetFloat("PlayerSpeed", Mathf.Abs(velocity.x));
+
         playerRigidbody.velocity = velocity;
     }
     private void RunWithoutAcceleration() 
     {
         velocity.x = targetVelocity.x;
+        animator.SetFloat("PlayerSpeed", Mathf.Abs(velocity.x));
         playerRigidbody.velocity = velocity;
 
     }

@@ -29,7 +29,7 @@ public class PointPosition : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        UpdateLineRendererPositions();  
+        //UpdateLineRendererPositions();  
     }
     public void UpdateLineRendererPositions()
     {
@@ -56,7 +56,7 @@ public class PointPosition : MonoBehaviour
     }
     public void OnSliderValueChanged() 
     {
-       // UpdateLineRendererPositions();
+        UpdateLineRendererPositions();
     
     }
 
