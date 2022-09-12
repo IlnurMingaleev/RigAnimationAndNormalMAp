@@ -197,10 +197,10 @@ public class CharacterJump : MonoBehaviour
             velocity.y += jumpSpeed;
             currentlyJumping = true;
 
-            if (characterJuice != null) 
+            /*if (characterJuice != null) 
             {
                 characterJuice.JumpEffects();
-            }
+            }*/
         }
     }
     public void OnRadialSliderValueChanged(GameObject radialSliderGameObject) 

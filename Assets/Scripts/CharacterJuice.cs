@@ -8,6 +8,7 @@ public class CharacterJuice : MonoBehaviour
     private CharacterJump characterJump;
     private Animator animator;
     private Rigidbody2D rigidbody;
+    [SerializeField] private Transform mainBone;
     
     [Header("Components - Particles")]
     [SerializeField] private ParticleSystem moveParticles;
@@ -49,9 +50,9 @@ public class CharacterJuice : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        TiltCharacter();
+       //TiltCharacter();
 
         //We need to change the character's running animation to suit their current speed
         runningSpeed = Mathf.Clamp(Mathf.Abs(playerController.Velocity.x), 0, maxSpeed);
@@ -61,7 +62,25 @@ public class CharacterJuice : MonoBehaviour
 
     }
 
-    private void TiltCharacter() 
+
+    private void TiltCharacter()
+    {
+        //See which direction the character is currently running towards, and tilt in that direction
+        float directionToTilt = 0;
+        if (playerController.velocity.x != 0)
+        {
+            directionToTilt = Mathf.Sign(playerController.velocity.x);
+        }
+
+        //Create a vector that the character will tilt towards
+        //Vector3 targetRotVector = new Vector3(0, 0, Mathf.Lerp(-maxTilt, maxTilt, Mathf.InverseLerp(-1, 1, directionToTilt)));
+
+        //And then rotate the character in that direction
+        //mainBone.transform.rotation = Quaternion.RotateTowards(mainBone.transform.rotation, Quaternion.Euler(-targetRotVector), tiltSpeed * Time.deltaTime);
+        //mainBone.localEulerAngles = new Vector3(0,0, 90 - maxTilt);
+       
+    }
+   /* private void TiltCharacter() 
     {
         float tiltDirection = 0;
         if (playerController.Velocity.x != 0) 
@@ -72,7 +91,7 @@ public class CharacterJuice : MonoBehaviour
         Vector3 tiltVector = new Vector3(0, 0, Mathf.Lerp(-maxTilt, maxTilt, Mathf.InverseLerp(-1, 1, tiltDirection)));
         animator.transform.rotation = Quaternion.RotateTowards(animator.transform.rotation, Quaternion.Euler(-tiltVector), tiltSpeed * Time.deltaTime);
             
-    }
+    }*/
     private void CheckForLanding() 
     {
         if (!playerGrounded && characterJump.IsPlayerOnGround)

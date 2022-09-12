@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     public bool isKeyPressed;
     private Rigidbody2D playerRigidbody;
     public bool isFacingRight;
-    private Vector2 velocity;
+    public Vector2 velocity;
     private Vector2 targetVelocity;
     private float maxSpeedChange;
 
@@ -126,9 +126,8 @@ public class PlayerController : MonoBehaviour
 
         velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, maxSpeedChange);
 
-        animator.SetFloat("PlayerSpeed", Mathf.Abs(velocity.x));
-
         playerRigidbody.velocity = velocity;
+        animator.SetFloat("PlayerSpeed", Mathf.Abs(velocity.x));
     }
     private void RunWithoutAcceleration() 
     {
