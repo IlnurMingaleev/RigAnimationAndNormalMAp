@@ -10,7 +10,7 @@ public class SlidePanel : MonoBehaviour
     [SerializeField] private RectTransform buttonTabs;
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform lastPoint;
-
+    [SerializeField] private PointPosition pointPosition;
     
 
     // Start is called before the first frame update
@@ -25,6 +25,7 @@ public class SlidePanel : MonoBehaviour
     public void OpenPanel() 
     {
         panel.anchoredPosition = new Vector2(0, -(panelHeight + buttonTabHeight));
+        pointPosition.UpdateLineRendererPositions();
       
     }
     public void ClosePanel()

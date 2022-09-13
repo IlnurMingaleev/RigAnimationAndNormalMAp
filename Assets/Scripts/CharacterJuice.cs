@@ -8,7 +8,7 @@ public class CharacterJuice : MonoBehaviour
     private CharacterJump characterJump;
     private Animator animator;
     private Rigidbody2D rigidbody;
-    [SerializeField] private Transform mainBone;
+    [SerializeField] private TrailRenderer trailRenderer;
     
     [Header("Components - Particles")]
     [SerializeField] private ParticleSystem moveParticles;
@@ -38,6 +38,7 @@ public class CharacterJuice : MonoBehaviour
     private bool jumpStretching;
     private bool landSquashing;
     private bool playerGrounded;
+    private float directionX;
 
     
     // Start is called before the first frame update
@@ -52,6 +53,14 @@ public class CharacterJuice : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (playerController.movementX > 0) 
+        {
+            directionX = 1;
+        }
+        if (playerController.movementX < 0) 
+        {
+            directionX = -1;
+        }
         //TiltCharacter();
         ControlMovementParticle();
         //We need to change the character's running animation to suit their current speed
@@ -79,7 +88,6 @@ public class CharacterJuice : MonoBehaviour
         if (!playerGrounded && characterJump.isPlayerOnGround)
         {
             playerGrounded = true;
-            //animator.SetFloat("directionX", playerController.movementX);
             animator.SetTrigger("Land");
             landParticles.Play();
 
@@ -95,9 +103,8 @@ public class CharacterJuice : MonoBehaviour
         }
     }
 
-    public void JumpEffects() 
-    {
-        //animator.SetFloat("directionX",playerController.movementX);
+    public void JumpEffects()
+    { 
         animator.ResetTrigger("Land");
         
         animator.SetTrigger("Jump");
@@ -114,9 +121,11 @@ public class CharacterJuice : MonoBehaviour
         else { landSquashing = true; }
         pressing = true;
 
+        xPress *= directionX;
+
         Vector3 originalSize = transform.localScale;
-        if (playerController.movementX < 0) xPress *= (-1);
         Vector3 targetSize = new Vector3(xPress, yPress, originalSize.z);
+     
 
         //Vector3 originalPosition = gameObject.transform.position;
         //Vector3 targetPosition = new Vector3(originalPosition.x,originalPosition.y - dropAmount, originalPosition.z);
@@ -145,23 +154,35 @@ public class CharacterJuice : MonoBehaviour
 
 
     }
+
     public void OnSliderValueChanged(GameObject sliderGameObject)
     {
         Slider tempSlider = sliderGameObject.GetComponent<Slider>();
         float value = tempSlider.value;
         switch (sliderGameObject.name)
         {
-            case "Jump Slider":
+            // Squash&Stretch
+            case "JumpSqueeze Slider":
                 jumpStretchMultiplyer = value;
                 break;
-            case "Land Slider":
+            case "LandSqueeze Slider":
                 landSquashMultiplyer = value;
                 break;
-            case "Angle Slider":
-                maxTilt = value;
+            // Particles
+            case "Run Slider":
+                var mainMoveParticles = moveParticles.main;
+                mainMoveParticles.startLifetime = value;
                 break;
-            case "Tilt Speed Slider":
-                tiltSpeed = value;
+            case "Jump Slider":
+                var mainJumpParticles = jumpParticles.main;
+                mainJumpParticles.startLifetime = value;
+                break;
+            case "Land Slider":
+                var mainLandParticles = landParticles.main;
+                mainLandParticles.startLifetime = value;
+                break;
+            case "Trail Slider":
+                trailRenderer.time = value;
                 break;
 
         }

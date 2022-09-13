@@ -26,15 +26,9 @@ public class PointPosition : MonoBehaviour
         UpdateLineRendererPositions();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        //UpdateLineRendererPositions();  
-    }
+    
     public void UpdateLineRendererPositions()
     {
-
-
         Vector2[] handlePositions = new Vector2[5] {
             cam.WorldToScreenPoint(startPoint.position),
             cam.WorldToScreenPoint(accelerationHandle.position),
@@ -42,9 +36,9 @@ public class PointPosition : MonoBehaviour
             cam.WorldToScreenPoint(decelerationHandle.position),
             cam.WorldToScreenPoint(endPoint.position),
         };
-        //lineRenderer.gameObject.SetActive(false);
+        
         lineRenderer.Points = handlePositions;
-        //lineRenderer.gameObject.SetActive(false);
+        
     }
 
     Vector2 WorldToCanvasPosition(Canvas canvas, RectTransform canvasRect, Camera camera, Vector3 position)
