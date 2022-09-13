@@ -33,10 +33,6 @@ public class PlayerController : MonoBehaviour
     private bool isMoveInstant;
     public bool isOnGround;
     public float movementX;
-
-    //[SerializeField] private Slider accelerationSlider;
-    //[SerializeField] private Slider speedSlider;
-    //[SerializeField] private Slider slowDownSlider;
     public Vector2 Velocity 
     {
         get 
@@ -74,14 +70,8 @@ public class PlayerController : MonoBehaviour
         {
             isKeyPressed = true;
             animator.SetBool("Walking", true);
-            if (movementX > 0 && !isFacingRight)
-            {
-                Flip();
-            }
-            if (movementX < 0 && isFacingRight)
-            {
-                Flip();
-            }
+            
+            
         }
         else
         {
@@ -98,7 +88,7 @@ public class PlayerController : MonoBehaviour
     {
 
         movementX = context.ReadValue<Vector2>().x;
-        //Debug.Log("MovementX:" + movementX);
+        //Debug.Log("MovementX: " + movementX);
    
     }
 
@@ -110,20 +100,20 @@ public class PlayerController : MonoBehaviour
 
         if (isKeyPressed)
         {
-            if (Mathf.Sign(movementX) == Mathf.Sign(velocity.x))
+            if (Mathf.Sign(movementX) != Mathf.Sign(velocity.x))
             {
-                maxSpeedChange = acceleration * Time.deltaTime;
+                maxSpeedChange = turnSpeed * Time.deltaTime;
             }
             else
             {
-                maxSpeedChange = turnSpeed * Time.deltaTime;
+                maxSpeedChange = acceleration * Time.deltaTime;
             }
         }
         else 
         { 
             maxSpeedChange = slowDown * Time.deltaTime;
         }
-
+        Debug.Log(maxSpeedChange);
         velocity.x = Mathf.MoveTowards(velocity.x, targetVelocity.x, maxSpeedChange);
 
         playerRigidbody.velocity = velocity;
@@ -138,6 +128,10 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        float scale = 0.1f;
+        if (movementX < 0) scale *= (-1);
+        transform.localScale = new Vector3(scale, 0.1f, 0.1f);
+
         isOnGround = groundCheck.CheckIsOnGround();
 
         velocity = playerRigidbody.velocity;
@@ -160,13 +154,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Flip()
-    {
-        Vector3 currentScale = gameObject.transform.localScale;
-        currentScale.x *= -1;
-        gameObject.transform.localScale = currentScale;
-        isFacingRight = !isFacingRight;
-    }
     public void OnSliderValueChanged(GameObject slider) 
     {
         Slider tempSlider = slider.GetComponent<Slider>();

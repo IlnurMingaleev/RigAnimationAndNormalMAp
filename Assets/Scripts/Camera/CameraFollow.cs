@@ -3,15 +3,18 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    [Header("Camera Parametrs")]
     [SerializeField] private Transform playerTarget;
     [SerializeField] private Vector3 offset;
     [SerializeField] private float smoothTimeX;
     [SerializeField] private float smoothTimeY;
+    [SerializeField] private float lookAheadOffsetX;
+    
     private Rigidbody2D playerRigidbody;
     private PlayerController controller;
-    [SerializeField] private float lookAheadOffsetX;
     private Vector3 velocity = Vector3.zero;
     private Camera camera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,8 +33,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 desiredPosition = playerTarget.position + offset + delta;
         float deltaPositionX = Mathf.SmoothDamp(transform.position.x, desiredPosition.x, ref velocity.x, smoothTimeX);
         float deltaPositionY = Mathf.SmoothDamp(transform.position.y, desiredPosition.y, ref velocity.y, smoothTimeY);
-        //float deltaPositionX = Mathf.Lerp(transform.position.x, desiredPosition.x, smoothTimeX * Time.deltaTime);
-        //float deltaPositionY = Mathf.Lerp(transform.position.y, desiredPosition.y, smoothTimeY * Time.deltaTime);
         transform.position = new Vector3(deltaPositionX, deltaPositionY, transform.position.z);
     }
 }
