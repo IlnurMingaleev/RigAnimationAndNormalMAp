@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDataSaveLoad
 {
 
     private PlayerControls playerControls;
@@ -206,4 +206,26 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void LoadData(GameData data)
+    {
+        this.maxSpeed = data.maxSpeed;
+        this.maxAcceleration = data.maxAcceleration;
+        this.maxSlowDown = data.maxSlowDown;
+        this.maxTurnSpeed = data.maxTurnSpeed;
+        this.maxAirAcceleration = data.maxAirAcceleration;
+        this.maxAirSlowDown = data.maxAirSlowDown;
+        this.maxAirTurnSpeed = data.maxAirTurnSpeed;
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.maxSpeed = this.maxSpeed;
+        data.maxAcceleration = this.maxAcceleration;
+        data.maxSlowDown = this.maxSlowDown;
+        data.maxTurnSpeed = this.maxTurnSpeed;
+        data.maxAirAcceleration = this.maxAirAcceleration;
+        data.maxAirSlowDown = this.maxAirSlowDown;
+        data.maxAirTurnSpeed = this.maxAirTurnSpeed;
+
+    }
 }

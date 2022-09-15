@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class CharacterJump : MonoBehaviour
+public class CharacterJump : MonoBehaviour, IDataSaveLoad
 {
     private GroundCheck groundCheck;
     private Rigidbody2D playerRigidbody;
@@ -221,6 +221,9 @@ public class CharacterJump : MonoBehaviour
                 Time.timeScale = value;
                 scaleOfTime = value;
                 break;
+            case "Duration Slider":
+                timeToJumpApex = value;
+                break;
         }
     
     }
@@ -241,5 +244,34 @@ public class CharacterJump : MonoBehaviour
         }
 
     }
-  
+
+    public void LoadData(GameData data)
+    {
+        this.timeToJumpApex = data.timeToJumpApex;
+        this.upwardMovementMultiplyer = data.upwardMovementMultiplyer;
+        this.downwardMovementMultiplyer = data.downwardMovementMultiplyer;
+        this.maxAirJumps = data.maxAirJumps;
+        this.variableJumpHeight = data.variableJumpHeight;
+        this.jumpCutoff = data.jumpCutoff;
+        this.speedLimit = data.speedLimit;
+        this.coyoteTime = data.coyoteTime;
+        this.jumpBuffer = data.jumpBuffer;
+        this.jumpHeight = data.jumpHeight;
+        this.jumpHeightMultiplyer = data.jumpHeightMultiplyer;
+}
+
+    public void SaveData(GameData data)
+    {
+        data.timeToJumpApex = this.timeToJumpApex;
+        data.upwardMovementMultiplyer = this.upwardMovementMultiplyer;
+        data.downwardMovementMultiplyer = this.downwardMovementMultiplyer;
+        data.maxAirJumps = this.maxAirJumps;
+        data.variableJumpHeight = this.variableJumpHeight;
+        data.jumpCutoff = this.jumpCutoff;
+        data.speedLimit = this.speedLimit;
+        data.coyoteTime = this.coyoteTime;
+        data.jumpBuffer = this.jumpBuffer;
+        data.jumpHeight = this.jumpHeight;
+        data.jumpHeightMultiplyer = this.jumpHeightMultiplyer;
+    }
 }
